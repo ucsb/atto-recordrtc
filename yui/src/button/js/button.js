@@ -46,7 +46,7 @@
 // Scrutinizer CI directives.
 /** global: Y */
 /** global: M */
-
+var _COUNT = 0;
 var PLUGINNAME = 'atto_recordrtc',
     TEMPLATE = '' +
     '<div class="{{PLUGINNAME}} container-fluid">' +
@@ -61,12 +61,12 @@ var PLUGINNAME = 'atto_recordrtc',
         '{{#if isAudio}}' +
           '<div class="{{bs_col}}1"></div>' +
           '<div class="{{bs_col}}10">' +
-            '<audio id="player"></audio>' +
+            '<audio id="player{{count}}"></audio>' +
           '</div>' +
           '<div class="{{bs_col}}1"></div>' +
         '{{else}}' +
           '<div class="{{bs_col}}12">' +
-            '<video id="player"></video>' +
+            '<video id="player{{count}}"></video>' +
           '</div>' +
         '{{/if}}' +
       '</div>' +
@@ -171,13 +171,14 @@ Y.namespace('M.atto_recordrtc').Button = Y.Base.create('button', Y.M.editor_atto
      */
     _audio: function() {
         var dialogue = this.getDialogue();
+        var mycount = _COUNT++;
 
         dialogue.set('headerContent', M.util.get_string('audiortc', 'atto_recordrtc'));
-        dialogue.set('bodyContent', this._createContent('audio'));
+        dialogue.set('bodyContent', this._createContent('audio', mycount));
 
         dialogue.show();
 
-        M.atto_recordrtc.audiomodule.init(this);
+        M.atto_recordrtc.audiomodule.init(this, dialogue.get('id'), mycount);
     },
 
     /**
@@ -188,13 +189,14 @@ Y.namespace('M.atto_recordrtc').Button = Y.Base.create('button', Y.M.editor_atto
      */
     _video: function() {
         var dialogue = this.getDialogue();
+        var mycount = _COUNT++;
 
         dialogue.set('headerContent', M.util.get_string('videortc', 'atto_recordrtc'));
-        dialogue.set('bodyContent', this._createContent('video'));
+        dialogue.set('bodyContent', this._createContent('video', mycount));
 
         dialogue.show();
 
-        M.atto_recordrtc.videomodule.init(this);
+        M.atto_recordrtc.videomodule.init(this, dialogue.get('id'), mycount);
     },
 
     /**
@@ -205,7 +207,7 @@ Y.namespace('M.atto_recordrtc').Button = Y.Base.create('button', Y.M.editor_atto
      * @returns {Object}
      * @private
      */
-    _createContent: function(type) {
+    _createContent: function(type, mycount) {
         var isAudio = (type === 'audio'),
             bsRow = 'row',
             bsCol = 'col-xs-',
@@ -215,6 +217,7 @@ Y.namespace('M.atto_recordrtc').Button = Y.Base.create('button', Y.M.editor_atto
         var bodyContent = Y.Handlebars.compile(TEMPLATE)({
             PLUGINNAME: PLUGINNAME,
             isAudio: isAudio,
+            count: mycount,
             bs_row: bsRow,
             bs_col: bsCol,
             bs_al_dang: bsAlDang,

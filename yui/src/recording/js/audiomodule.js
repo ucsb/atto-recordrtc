@@ -39,15 +39,16 @@ var cm = M.atto_recordrtc.commonmodule,
     ccm = M.atto_recordrtc.compatcheckmodule;
 
 M.atto_recordrtc.audiomodule = {
-    init: function(scope) {
+    init: function(scope, dialogueId, mycount) {
         // Assignment of global variables.
         cm.editorScope = scope; // Allows access to the editor's "this" context.
-        cm.alertWarning = Y.one('div#alert-warning');
-        cm.alertDanger = Y.one('div#alert-danger');
-        cm.player = Y.one('audio#player');
-        cm.playerDOM = document.querySelector('audio#player');
-        cm.startStopBtn = Y.one('button#start-stop');
-        cm.uploadBtn = Y.one('button#upload');
+        var dialogue = Y.one('#'+dialogueId);
+        cm.alertWarning = dialogue.one('div#alert-warning');
+        cm.alertDanger = dialogue.one('div#alert-danger');
+        cm.player = dialogue.one('audio#player'+mycount);
+        cm.playerDOM = document.querySelector('audio#player'+mycount);
+        cm.startStopBtn = dialogue.one('button#start-stop');
+        cm.uploadBtn = dialogue.one('button#upload');
         cm.recType = 'audio';
         cm.maxUploadSize = scope.get('maxrecsize');
 
